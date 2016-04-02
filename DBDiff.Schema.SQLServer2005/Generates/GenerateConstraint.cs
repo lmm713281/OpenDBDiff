@@ -284,7 +284,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         #endregion
