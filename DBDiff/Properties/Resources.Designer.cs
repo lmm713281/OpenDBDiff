@@ -63,6 +63,16 @@ namespace DBDiff.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_switch {
+            get {
+                object obj = ResourceManager.GetObject("arrow_switch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap clipboard_invoice {
             get {
                 object obj = ResourceManager.GetObject("clipboard_invoice", resourceCulture);

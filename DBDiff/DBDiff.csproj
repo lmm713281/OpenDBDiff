@@ -215,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <None Include="Resources\arrow_switch.png" />
     <None Include="Resources\folder.png" />
     <None Include="Resources\diskette.png" />
     <None Include="Resources\new_window.png" />

@@ -420,31 +420,30 @@ Clicking 'OK' will result in the following:
         {
             mySqlConnectFront2 = new SqlServerConnectFront();
             mySqlConnectFront1 = new SqlServerConnectFront();
-            mySqlConnectFront1.Location = new Point(1, 1);
-            mySqlConnectFront1.Name = "mySqlConnectFront1";
-            mySqlConnectFront1.Anchor =
-                (AnchorStyles)((int)AnchorStyles.Bottom + (int)AnchorStyles.Left + (int)AnchorStyles.Right);
 
-            mySqlConnectFront1.TabIndex = 10;
-            mySqlConnectFront1.Text = "Source Database:";
-            mySqlConnectFront2.Location = new Point(1, 1);
-            mySqlConnectFront2.Name = "mySqlConnectFront2";
-            mySqlConnectFront2.Anchor =
-                (AnchorStyles)((int)AnchorStyles.Bottom + (int)AnchorStyles.Left + (int)AnchorStyles.Right);
-            mySqlConnectFront2.TabIndex = 10;
-            mySqlConnectFront1.Visible = true;
-            mySqlConnectFront2.Visible = true;
-            mySqlConnectFront2.Text = "Destination Database:";
-            ((SqlServerConnectFront)mySqlConnectFront1).UserName = "sa";
-            ((SqlServerConnectFront)mySqlConnectFront1).Password = "";
-            ((SqlServerConnectFront)mySqlConnectFront1).ServerName = "(local)";
-            ((SqlServerConnectFront)mySqlConnectFront2).UserName = "sa";
-            ((SqlServerConnectFront)mySqlConnectFront2).Password = "";
-            ((SqlServerConnectFront)mySqlConnectFront2).ServerName = "(local)";
+            foreach (var scf in new IFront[] { mySqlConnectFront1, mySqlConnectFront2 })
+            {
+                scf.Location = new Point(1, 1);
+                scf.Dock = DockStyle.Fill;
+                scf.TabIndex = 10;
+                scf.Visible = true;
+
+                ((SqlServerConnectFront)scf).UserName = "sa";
+                ((SqlServerConnectFront)scf).Password = "";
+                ((SqlServerConnectFront)scf).ServerName = "(local)";
+            }
+
+            mySqlConnectFront1.Name = "mySqlConnectFront1";
+            mySqlConnectFront1.Text = "Source database:";
             ((SqlServerConnectFront)mySqlConnectFront1).DatabaseIndex = 1;
+
+            mySqlConnectFront2.Name = "mySqlConnectFront2";
+            mySqlConnectFront2.Text = "Destination database:";
             ((SqlServerConnectFront)mySqlConnectFront2).DatabaseIndex = 2;
-            PanelDestination.Controls.Add((Control)mySqlConnectFront2);
-            PanelSource.Controls.Add((Control)mySqlConnectFront1);
+
+            DestinationGroupBox.Controls.Add((Control)mySqlConnectFront2);
+            SourceGroupBox.Controls.Add((Control)mySqlConnectFront1);
+
         }
 
         private void optSQL2005_CheckedChanged(object sender, EventArgs e)
@@ -455,8 +454,8 @@ Clicking 'OK' will result in the following:
             }
             else
             {
-                PanelSource.Controls.Remove((Control)mySqlConnectFront1);
-                PanelDestination.Controls.Remove((Control)mySqlConnectFront2);
+                SourceGroupBox.Controls.Remove((Control)mySqlConnectFront1);
+                DestinationGroupBox.Controls.Remove((Control)mySqlConnectFront2);
             }
         }
 
@@ -688,16 +687,8 @@ Clicking 'OK' will result in the following:
             txtSyncScript.Text = "";
         }
 
-        private void panel2_Resize(object sender, EventArgs e)
-        {
-        }
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            panel2.Left = Math.Max(this.btnProject.Right + this.btnProject.Left, (Width - panel2.Width) / 2);
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
+        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -722,8 +713,7 @@ Clicking 'OK' will result in the following:
                 MessageBox.Show(this, ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void btnProject_Click(object sender, EventArgs e)
+        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -789,11 +779,24 @@ Clicking 'OK' will result in the following:
             }
         }
 
-        private void btnNewProject_Click(object sender, EventArgs e)
+        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             mySqlConnectFront1.ConnectionString = "";
             mySqlConnectFront2.ConnectionString = "";
             ActiveProject = null;
         }
+
+        private void SwapConnectionsButton_Click(object sender, EventArgs e)
+        {
+            var temp = mySqlConnectFront1.ConnectionString;
+            mySqlConnectFront1.ConnectionString = mySqlConnectFront2.ConnectionString;
+            mySqlConnectFront2.ConnectionString = temp;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }
