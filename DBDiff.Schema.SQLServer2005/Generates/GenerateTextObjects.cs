@@ -24,7 +24,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
             sql += "SELECT O.name, O.type, M.object_id, OBJECT_DEFINITION(M.object_id) AS Text FROM sys.sql_modules M ";
             sql += "INNER JOIN sys.objects O ON O.object_id = M.object_id ";
             sql += "WHERE ";
-            if (options.Ignore.FilterStoreProcedure)
+            if (options.Ignore.FilterStoredProcedure)
                 filter += "O.type = 'P' OR ";
             if (options.Ignore.FilterView)
                 filter += "O.type = 'V' OR ";
@@ -41,7 +41,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
             ICode code = null;
             try
             {
-                if ((database.Options.Ignore.FilterStoreProcedure) || (database.Options.Ignore.FilterView) || (database.Options.Ignore.FilterFunction) || (database.Options.Ignore.FilterTrigger))
+                if ((database.Options.Ignore.FilterStoredProcedure) || (database.Options.Ignore.FilterView) || (database.Options.Ignore.FilterFunction) || (database.Options.Ignore.FilterTrigger))
                 {
                     root.RaiseOnReading(new ProgressEventArgs("Reading Text Objects...", Constants.READING_TEXTOBJECTS));
                     using (SqlConnection conn = new SqlConnection(connectionString))
@@ -67,7 +67,11 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
                                         code = (ICode)database.Find(id);
 
                                     if (type.Equals("P"))
-                                        ((ICode)database.Procedures.Find(id)).Text = GetObjectDefinition(type, name, definition);
+                                    {
+                                        var procedure = database.Procedures.Find(id);
+                                        if (procedure != null)
+                                            ((ICode)procedure).Text = GetObjectDefinition(type, name, definition);
+                                    }
 
                                     if (type.Equals("IF") || type.Equals("FN") || type.Equals("TF"))
                                         code = (ICode)database.Functions.Find(id);
@@ -90,7 +94,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
         {
             string rv = definition;
 
-            string sqlDelimiters = @"(\r|\n|\s)*?";
+            string sqlDelimiters = @"(\r|\n|\s)+?";
             RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
             Regex re = new Regex(@"CREATE" + sqlDelimiters + @"PROC(EDURE)?" + sqlDelimiters + @"(\w+\.|\[\w+\]\.)?\[?(?<spname>\w+)\]?" + sqlDelimiters, options);
             switch (type)

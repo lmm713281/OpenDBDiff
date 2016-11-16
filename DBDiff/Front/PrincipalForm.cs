@@ -53,56 +53,56 @@ namespace DBDiff.Front
             this.Text += Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
-        /*private void ProcesarSybase()
+        /*private void ProcessSybase()
         {
-            DBDiff.Schema.Sybase.Model.Database origen;
-            DBDiff.Schema.Sybase.Model.Database destino;
+            DBDiff.Schema.Sybase.Model.Database origin;
+            DBDiff.Schema.Sybase.Model.Database destination;
 
             DBDiff.Schema.Sybase.Generate sql = new DBDiff.Schema.Sybase.Generate();
             sql.ConnectioString = txtConnectionOrigen.Text;
-            
+
             AseFilter.OptionFilter.FilterTrigger = false;
 
-            origen = sql.Process(AseFilter);
+            origin = sql.Process(AseFilter);
 
-            sql.ConnectioString = txtConnectionDestino.Text;
-            destino = sql.Process(AseFilter);
+            sql.ConnectioString = txtConnectionDestination.Text;
+            destination = sql.Process(AseFilter);
 
             this.txtScript.SQLType = SQLEnum.SQLTypeEnum.Sybase;
             this.txtDiferencias.SQLType = SQLEnum.SQLTypeEnum.Sybase;
-            //origen = DBDiff.Schema.Sybase.Generate.Compare(origen, destino);
+            //origin = DBDiff.Schema.Sybase.Generate.Compare(origin, destination);
 
-            this.txtScript.Text = origen.ToSQL();
-            //this.txtDiferencias.Text = origen.ToSQLDiff();
+            this.txtScript.Text = origin.ToSQL();
+            //this.txtDiferencias.Text = origin.ToSQLDiff();
         }*/
 
-        /*private void ProcesarMySQL()
+        /*private void ProcessMySQL()
         {
-            DBDiff.Schema.MySQL.Model.Database origen;
-            DBDiff.Schema.MySQL.Model.Database destino;
+            DBDiff.Schema.MySQL.Model.Database origin;
+            DBDiff.Schema.MySQL.Model.Database destination;
 
             DBDiff.Schema.MySQL.Generate sql = new DBDiff.Schema.MySQL.Generate();
             sql.ConnectioString = mySqlConnectFront1.ConnectionString;
-            origen = sql.Process(MySQLfilter);
+            origin = sql.Process(MySQLfilter);
 
             sql.ConnectioString = mySqlConnectFront2.ConnectionString;
-            destino = sql.Process(MySQLfilter);
+            destination = sql.Process(MySQLfilter);
 
             //this.txtScript.SQLType = SQLEnum.SQLTypeEnum.MySQL;
             //this.txtDiferencias.SQLType = SQLEnum.SQLTypeEnum.MySQL;
-            origen = DBDiff.Schema.MySQL.Generate.Compare(origen, destino);
-            this.txtDiferencias.Text = origen.ToSQLDiff();
+            origin = DBDiff.Schema.MySQL.Generate.Compare(origin, destination);
+            this.txtDiferencias.Text = origin.ToSQLDiff();
         }
         */
 
-        private void ProcesarSQL2005()
+        private void ProcessSQL2005()
         {
-            ProgressForm progres = null;
+            ProgressForm progress = null;
             string errorLocation = null;
             try
             {
-                Database origen;
-                Database destino;
+                Database origin;
+                Database destination;
 
                 if ((!String.IsNullOrEmpty(mySqlConnectFront1.DatabaseName) &&
                      (!String.IsNullOrEmpty(mySqlConnectFront2.DatabaseName))))
@@ -116,27 +116,28 @@ namespace DBDiff.Front
                     sql2.ConnectionString = mySqlConnectFront2.ConnectionString;
                     sql2.Options = SqlFilter;
 
-                    progres = new ProgressForm("Source Database", "Destination Database", sql2, sql1);
-                    progres.ShowDialog(this);
-                    if (progres.Error != null)
+                    progress = new ProgressForm("Source Database", "Destination Database", sql2, sql1);
+                    progress.ShowDialog(this);
+                    if (progress.Error != null)
                     {
-                        throw new SchemaException(progres.Error.Message, progres.Error);
+                        throw new SchemaException(progress.Error.Message, progress.Error);
                     }
 
-                    origen = progres.Source;
-                    destino = progres.Destination;
+                    origin = progress.Source;
+                    destination = progress.Destination;
 
                     txtSyncScript.ConfigurationManager.Language = "mssql";
                     txtSyncScript.IsReadOnly = false;
                     txtSyncScript.Styles.LineNumber.BackColor = Color.White;
                     txtSyncScript.Styles.LineNumber.IsVisible = false;
                     errorLocation = "Generating Synchronized Script";
-                    txtSyncScript.Text = destino.ToSqlDiff(_selectedSchemas).ToSQL();
+                    txtSyncScript.Text = destination.ToSqlDiff(_selectedSchemas).ToSQL();
                     txtSyncScript.IsReadOnly = true;
-                    schemaTreeView1.DatabaseSource = destino;
-                    schemaTreeView1.DatabaseDestination = origen;
+                    schemaTreeView1.DatabaseSource = destination;
+                    schemaTreeView1.DatabaseDestination = origin;
                     schemaTreeView1.OnSelectItem += new SchemaTreeView.SchemaHandler(schemaTreeView1_OnSelectItem);
-                    textBox1.Text = origen.ActionMessage.Message;
+                    schemaTreeView1_OnSelectItem(schemaTreeView1.SelectedNode);
+                    textBox1.Text = origin.ActionMessage.Message;
 
                     btnCopy.Enabled = true;
                     btnSaveAs.Enabled = true;
@@ -148,9 +149,9 @@ namespace DBDiff.Front
             }
             catch (Exception ex)
             {
-                if (errorLocation == null && progres != null)
+                if (errorLocation == null && progress != null)
                 {
-                    errorLocation = String.Format("{0} (while {1})", progres.ErrorLocation, progres.ErrorMostRecentProgress ?? "initializing");
+                    errorLocation = String.Format("{0} (while {1})", progress.ErrorLocation, progress.ErrorMostRecentProgress ?? "initializing");
                 }
 
                 throw new SchemaException("Error " + (errorLocation ?? " Comparing Databases"), ex);
@@ -159,6 +160,8 @@ namespace DBDiff.Front
 
         private void schemaTreeView1_OnSelectItem(string ObjectFullName)
         {
+            if (ObjectFullName == null) return;
+
             txtNewObject.IsReadOnly = false;
             txtOldObject.IsReadOnly = false;
             txtNewObject.Text = "";
@@ -268,27 +271,27 @@ namespace DBDiff.Front
             }
         }
 
-        /*private void ProcesarSQL2000()
+        /*private void ProcessSQL2000()
         {
-            DBDiff.Schema.SQLServer2000.Model.Database origen;
-            DBDiff.Schema.SQLServer2000.Model.Database destino;
+            DBDiff.Schema.SQLServer2000.Model.Database origin;
+            DBDiff.Schema.SQLServer2000.Model.Database destination;
 
             DBDiff.Schema.SQLServer2000.Generate sql = new DBDiff.Schema.SQLServer2000.Generate();
 
-            lblMessage.Text = "Leyendo tablas de origen...";
+            lblMessage.Text = "Leyendo tablas de origin...";
             sql.OnTableProgress += new Progress.ProgressHandler(sql_OnTableProgress);
             //sql.ConnectioString = txtConnectionOrigen.Text;
-            origen = sql.Process();
+            origin = sql.Process();
 
-            //sql.ConnectioString = txtConnectionDestino.Text;
-            lblMessage.Text = "Leyendo tablas de destino...";
-            destino = sql.Process();
+            //sql.ConnectioString = txtConnectionDestination.Text;
+            lblMessage.Text = "Leyendo tablas de destination...";
+            destination = sql.Process();
 
-            origen = DBDiff.Schema.SQLServer2000.Generate.Compare(origen, destino);
+            origin = DBDiff.Schema.SQLServer2000.Generate.Compare(origin, destination);
             //this.txtScript.SQLType = SQLEnum.SQLTypeEnum.SQLServer;
             //this.txtDiferencias.SQLType = SQLEnum.SQLTypeEnum.SQLServer;
-            this.txtDiferencias.Text = origen.ToSQLDiff();
-            
+            this.txtDiferencias.Text = origin.ToSQLDiff();
+
 
         }
         */
@@ -299,17 +302,17 @@ namespace DBDiff.Front
             DataCompareForm dataCompare = new DataCompareForm(selected, mySqlConnectFront1.ConnectionString, mySqlConnectFront2.ConnectionString);
             dataCompare.Show();
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void btnCompare_Click(object sender, EventArgs e)
         {
             string errorLocation = "Processing Compare";
             try
             {
                 Cursor = Cursors.WaitCursor;
                 _selectedSchemas = schemaTreeView1.GetCheckedSchemas();
-                //if (optSQL2000.Checked) ProcesarSQL2000();
-                if (optSQL2005.Checked) ProcesarSQL2005();
-                //if (optMySQL.Checked) ProcesarMySQL();
-                //if (optSybase.Checked) ProcesarSybase();
+                //if (optSQL2000.Checked) ProcessSQL2000();
+                if (optSQL2005.Checked) ProcessSQL2005();
+                //if (optMySQL.Checked) ProcessMySQL();
+                //if (optSybase.Checked) ProcessSybase();
                 schemaTreeView1.SetCheckedSchemas(_selectedSchemas);
                 errorLocation = "Saving Connections";
                 Project.SaveLastConfiguration(mySqlConnectFront1.ConnectionString, mySqlConnectFront2.ConnectionString);
@@ -348,14 +351,14 @@ namespace DBDiff.Front
                 exceptionMsg.AppendFormat("\r\n\r\n{0}", searchHash);
 
                 if (DialogResult.OK == MessageBox.Show(Owner, @"An unexpected error has occured during processing.
-Clicking 'OK' will result in the following: 
+Clicking 'OK' will result in the following:
 
     1. The exception info below will be copied to the clipboard.
 
     2. Your default browser will search CodePlex for more details.
 
     • *Please* click 'Create New Work Item' and paste the error details
-        into the Description field if there are no work items for this issue! 
+        into the Description field if there are no work items for this issue!
         (At least email the details to opendbdiff@gmail.com...)
 
     • Vote for existing work items; paste details into 'Add Comment'.
@@ -487,12 +490,24 @@ Clicking 'OK' will result in the following:
         {
             try
             {
-                saveFileDialog1.ShowDialog(Owner);
+                if (!string.IsNullOrEmpty(saveFileDialog1.FileName) && !string.IsNullOrEmpty(Path.GetDirectoryName(saveFileDialog1.FileName)))
+                {
+                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(saveFileDialog1.FileName);
+                    saveFileDialog1.FileName = Path.GetFileName(saveFileDialog1.FileName);
+                }
+                saveFileDialog1.ShowDialog(this);
                 if (!String.IsNullOrEmpty(saveFileDialog1.FileName))
                 {
-                    StreamWriter writer = new StreamWriter(saveFileDialog1.FileName, false);
-                    writer.Write(txtSyncScript.Text);
-                    writer.Close();
+                    var db = schemaTreeView1.DatabaseSource as Database;
+                    if (db != null)
+                    {
+                        using (StreamWriter writer = new StreamWriter(saveFileDialog1.FileName, false))
+                        {
+                            this._selectedSchemas = this.schemaTreeView1.GetCheckedSchemas();
+                            writer.Write(db.ToSqlDiff(this._selectedSchemas).ToSQL());
+                            writer.Close();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -546,7 +561,7 @@ Clicking 'OK' will result in the following:
                                             }
                                         }
                                         break;
-                                    case Enums.ObjectType.StoreProcedure:
+                                    case Enums.ObjectType.StoredProcedure:
                                         {
                                             switch (selected.Status)
                                             {
@@ -605,7 +620,7 @@ Clicking 'OK' will result in the following:
 
             if (SqlFilter.Comparison.ReloadComparisonOnUpdate)
             {
-                if (optSQL2005.Checked) ProcesarSQL2005();
+                if (optSQL2005.Checked) ProcessSQL2005();
             }
 
             btnUpdate.Enabled = false;
@@ -638,7 +653,7 @@ Clicking 'OK' will result in the following:
                     result = "Update successful";
                 }
                 MessageBox.Show(result);
-                if (optSQL2005.Checked) ProcesarSQL2005();
+                if (optSQL2005.Checked) ProcessSQL2005();
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using DBDiff.Schema.SQLServer.Generates.Options;
 
@@ -45,7 +46,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
 
             chkCompAssemblys.Checked = option.Ignore.FilterAssemblies;
             chkCompCLRFunctions.Checked = option.Ignore.FilterCLRFunction;
-            chkCompCLRStore.Checked = option.Ignore.FilterCLRStoreProcedure;
+            chkCompCLRStore.Checked = option.Ignore.FilterCLRStoredProcedure;
             chkCompCLRTrigger.Checked = option.Ignore.FilterCLRTrigger;
             chkCompCLRUDT.Checked = option.Ignore.FilterCLRUDT;
 
@@ -55,7 +56,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
             chkConstraintsUK.Checked = option.Ignore.FilterConstraintUK;
             chkConstraintsCheck.Checked = option.Ignore.FilterConstraintCheck;
 
-            chkCompExtendedProperties.Checked = option.Ignore.FilterExtendedPropertys;
+            chkCompExtendedProperties.Checked = option.Ignore.FilterExtendedProperties;
             chkCompFunciones.Checked = option.Ignore.FilterFunction;
             chkIndex.Checked = option.Ignore.FilterIndex;
             chkIndexFillFactor.Checked = option.Ignore.FilterIndexFillFactor;
@@ -65,7 +66,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
             chkFullTextPath.Checked = option.Ignore.FilterFullTextPath;
 
             chkCompSchemas.Checked = option.Ignore.FilterSchema;
-            chkCompStoreProcedure.Checked = option.Ignore.FilterStoreProcedure;
+            chkCompStoredProcedure.Checked = option.Ignore.FilterStoredProcedure;
             chkTableOption.Checked = option.Ignore.FilterTableOption;
             chkTables.Checked = option.Ignore.FilterTable;
             chkTablesColumnIdentity.Checked = option.Ignore.FilterColumnIdentity;
@@ -123,7 +124,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
 
             option.Ignore.FilterAssemblies = chkCompAssemblys.Checked;
             option.Ignore.FilterCLRFunction = chkCompCLRFunctions.Checked && chkCompAssemblys.Checked;
-            option.Ignore.FilterCLRStoreProcedure = chkCompCLRStore.Checked && chkCompAssemblys.Checked;
+            option.Ignore.FilterCLRStoredProcedure = chkCompCLRStore.Checked && chkCompAssemblys.Checked;
             option.Ignore.FilterCLRTrigger = chkCompCLRTrigger.Checked && chkCompAssemblys.Checked;
             option.Ignore.FilterCLRUDT = chkCompCLRUDT.Checked && chkCompAssemblys.Checked;
 
@@ -141,7 +142,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
             option.Ignore.FilterIndexFilter = chkIndexFilter.Checked && chkIndex.Checked;
 
             option.Ignore.FilterSchema = chkCompSchemas.Checked;
-            option.Ignore.FilterStoreProcedure = chkCompStoreProcedure.Checked;
+            option.Ignore.FilterStoredProcedure = chkCompStoredProcedure.Checked;
 
             option.Ignore.FilterTable = chkTables.Checked;
             option.Ignore.FilterColumnIdentity = chkTablesColumnIdentity.Checked && chkTables.Checked;
@@ -157,7 +158,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
             option.Ignore.FilterUserDataType = chkCompUDT.Checked;
             option.Ignore.FilterView = chkCompVistas.Checked;
             option.Ignore.FilterXMLSchema = chkCompXMLSchemas.Checked;
-            option.Ignore.FilterExtendedPropertys = chkCompExtendedProperties.Checked;
+            option.Ignore.FilterExtendedProperties = chkCompExtendedProperties.Checked;
             option.Ignore.FilterUsers = chkCompUsers.Checked;
             option.Ignore.FilterRoles = chkCompRoles.Checked;
             option.Ignore.FilterRules = chkCompRules.Checked;
@@ -235,6 +236,24 @@ namespace DBDiff.Schema.SQLServer.Generates.Front
             chkCompCLRTrigger.Enabled = chkCompAssemblys.Checked;
             chkCompCLRFunctions.Enabled = chkCompAssemblys.Checked;
             chkCompCLRUDT.Enabled = chkCompAssemblys.Checked;
+        }
+
+        private void DeleteNameFilterButton_Click(object sender, EventArgs e)
+        {
+            if (lstFilters.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in lstFilters.Items)
+                {
+                    if (item.Selected)
+                    {
+                        var type = (Enums.ObjectType)Enum.Parse(typeof(Enums.ObjectType), item.SubItems[1].Text);
+                        var fi = new SqlOptionFilterItem(type, item.Text);
+                        if (option.Filters.Items.Contains(fi))
+                            option.Filters.Items.Remove(fi);
+                    }
+                }
+                LoadFilters();
+            }
         }
     }
 }

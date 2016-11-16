@@ -28,7 +28,7 @@ namespace DBDiff.Schema
             ChangeOwner = 512,
             DropOlderStatus = 1024,
             BindStatus = 2048,
-            PermisionSet = 4096,
+            PermissionSet = 4096,
             AlterWhitespaceStatus = 8192
         }
 
@@ -50,7 +50,7 @@ namespace DBDiff.Schema
             DropConstraint = 12,
             DropConstraintPK = 13,
             DropSynonyms = 14,
-            DropStoreProcedure = 15,
+            DropStoredProcedure = 15,
             DropTrigger = 16,
             DropView = 17,
             DropFunction = 17,
@@ -94,7 +94,7 @@ namespace DBDiff.Schema
             AddFullTextIndex = 55,
             EnabledTrigger = 56,
             AddSynonyms = 57,
-            AddStoreProcedure = 58,
+            AddStoredProcedure = 58,
             DropOptions = 59,
             AddOptions = 60,
 
@@ -128,8 +128,10 @@ namespace DBDiff.Schema
             Column = 2,
             Trigger = 3,
             Constraint = 4,
+            [Description("Constraint Column")]
             ConstraintColumn = 5,
             Index = 6,
+            [Description("Index Column")]
             IndexColumn = 7,
             [Description("User Data Type")]
             UserDataType = 8,
@@ -137,11 +139,13 @@ namespace DBDiff.Schema
             XMLSchema = 9,
             View = 10,
             Function = 11,
-            [Description("Store Procedure")]
-            StoreProcedure = 12,
+            [Description("Stored Procedure")]
+            StoredProcedure = 12,
+            [Description("Table Option")]
             TableOption = 13,
             Database = 14,
             Schema = 15,
+            [Description("File Group")]
             FileGroup = 16,
             File = 17,
             Default = 18,
@@ -150,10 +154,12 @@ namespace DBDiff.Schema
             Assembly = 21,
             User = 22,
             Role = 23,
+            [Description("Full Text")]
             FullText = 24,
+            [Description("Assembly File")]
             AssemblyFile = 25,
-            [Description("CLR Store Procedure")]
-            CLRStoreProcedure = 26,
+            [Description("CLR Stored Procedure")]
+            CLRStoredProcedure = 26,
             [Description("CLR Trigger")]
             CLRTrigger = 27,
             [Description("CLR Function")]
@@ -167,6 +173,7 @@ namespace DBDiff.Schema
             PartitionScheme = 33,
             [Description("Table Type")]
             TableType = 34,
+            [Description("Full Text Index")]
             FullTextIndex = 35
         }
     }

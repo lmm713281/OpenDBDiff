@@ -21,8 +21,8 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
             UserTypes = new SchemaList<UserDataType, Database>(this, AllObjects);
             XmlSchemas = new SchemaList<XMLSchema, Database>(this, AllObjects);
             Schemas = new SchemaList<Schema, Database>(this, AllObjects);
-            Procedures = new SchemaList<StoreProcedure, Database>(this, AllObjects);
-            CLRProcedures = new SchemaList<CLRStoreProcedure, Database>(this, AllObjects);
+            Procedures = new SchemaList<StoredProcedure, Database>(this, AllObjects);
+            CLRProcedures = new SchemaList<CLRStoredProcedure, Database>(this, AllObjects);
             CLRFunctions = new SchemaList<CLRFunction, Database>(this, AllObjects);
             FileGroups = new SchemaList<FileGroup, Database>(this);
             Rules = new SchemaList<Rule, Database>(this, AllObjects);
@@ -85,11 +85,11 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
         [ShowItem("Rules")]
         public SchemaList<Rule, Database> Rules { get; private set; }
 
-        [ShowItem("Store Procedures", "Procedure", true)]
-        public SchemaList<StoreProcedure, Database> Procedures { get; private set; }
+        [ShowItem("Stored Procedures", "Procedure", true)]
+        public SchemaList<StoredProcedure, Database> Procedures { get; private set; }
 
-        [ShowItem("CLR Store Procedures", "CLRProcedure", true)]
-        public SchemaList<CLRStoreProcedure, Database> CLRProcedures { get; private set; }
+        [ShowItem("CLR Stored Procedures", "CLRProcedure", true)]
+        public SchemaList<CLRStoredProcedure, Database> CLRProcedures { get; private set; }
 
         [ShowItem("CLR Functions", "CLRFunction", true)]
         public SchemaList<CLRFunction, Database> CLRFunctions { get; private set; }
@@ -107,6 +107,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
         public SchemaList<UserDataType, Database> UserTypes { get; private set; }
 
         public SqlOption Options { get; set; }
+        IOption IDatabase.Options { get { return Options; } }
 
         public DatabaseInfo Info { get; set; }
 
@@ -303,7 +304,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
                 {
                     case Enums.ObjectType.Table:
                         return Tables[_FullName];
-                    case Enums.ObjectType.StoreProcedure:
+                    case Enums.ObjectType.StoredProcedure:
                         return Procedures[_FullName];
                     case Enums.ObjectType.Function:
                         return Functions[_FullName];
@@ -317,7 +318,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
                         return TablesTypes[_FullName];
                     case Enums.ObjectType.XMLSchema:
                         return XmlSchemas[_FullName];
-                    case Enums.ObjectType.CLRStoreProcedure:
+                    case Enums.ObjectType.CLRStoredProcedure:
                         return CLRProcedures[_FullName];
                     case Enums.ObjectType.CLRFunction:
                         return CLRFunctions[_FullName];

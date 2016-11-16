@@ -4,10 +4,10 @@ using DBDiff.Schema.SQLServer.Generates.Model.Util;
 
 namespace DBDiff.Schema.SQLServer.Generates.Model
 {
-    public class StoreProcedure : Code
+    public class StoredProcedure : Code
     {
-        public StoreProcedure(ISchemaBase parent)
-            : base(parent, Enums.ObjectType.StoreProcedure, Enums.ScripActionType.AddStoreProcedure, Enums.ScripActionType.DropStoreProcedure)
+        public StoredProcedure(ISchemaBase parent)
+            : base(parent, Enums.ObjectType.StoredProcedure, Enums.ScripActionType.AddStoredProcedure, Enums.ScripActionType.DropStoredProcedure)
         {
 
         }
@@ -17,7 +17,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Model
         /// </summary>
         public override ISchemaBase Clone(ISchemaBase parent)
         {
-            StoreProcedure item = new StoreProcedure(parent);
+            StoredProcedure item = new StoredProcedure(parent);
             item.Text = this.Text;
             item.Status = this.Status;
             item.Name = this.Name;

@@ -26,14 +26,14 @@ namespace DBDiff.Schema.SQLServer.Generates.Options
             FilterCLRFunction = true;
             FilterCLRTrigger = true;
             FilterCLRUDT = true;
-            FilterCLRStoreProcedure = true;
+            FilterCLRStoredProcedure = true;
             FilterFullText = true;
             FilterFullTextPath = false;
             FilterTableLockEscalation = true;
             FilterTableChangeTracking = true;
             FilterConstraint = defaultValue;
             FilterFunction = defaultValue;
-            FilterStoreProcedure = defaultValue;
+            FilterStoredProcedure = defaultValue;
             FilterView = defaultValue;
             FilterTable = defaultValue;
             FilterTableOption = defaultValue;
@@ -42,7 +42,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Options
             FilterSchema = defaultValue;
             FilterXMLSchema = defaultValue;
             FilterTableFileGroup = defaultValue;
-            FilterExtendedPropertys = defaultValue;
+            FilterExtendedProperties = defaultValue;
             FilterDDLTriggers = defaultValue;
             FilterSynonyms = defaultValue;
             FilterRules = defaultValue;
@@ -57,7 +57,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Options
 
         public Boolean FilterFullText { get; set; }
 
-        public Boolean FilterCLRStoreProcedure { get; set; }
+        public Boolean FilterCLRStoredProcedure { get; set; }
 
         public Boolean FilterCLRUDT { get; set; }
 
@@ -91,13 +91,13 @@ namespace DBDiff.Schema.SQLServer.Generates.Options
 
         public Boolean FilterDDLTriggers { get; set; }
 
-        public Boolean FilterExtendedPropertys { get; set; }
+        public Boolean FilterExtendedProperties { get; set; }
 
         public Boolean FilterTableFileGroup { get; set; }
 
         public Boolean FilterFunction { get; set; }
 
-        public Boolean FilterStoreProcedure { get; set; }
+        public Boolean FilterStoredProcedure { get; set; }
 
         public Boolean FilterView { get; set; }
 

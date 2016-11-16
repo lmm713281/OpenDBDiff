@@ -92,8 +92,12 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
             (new GenerateRules(this)).Fill(databaseSchema, ConnectionString);
             (new GenerateTables(this)).Fill(databaseSchema, ConnectionString, messages);
             (new GenerateViews(this)).Fill(databaseSchema, ConnectionString, messages);
-            (new GenerateIndex(this)).Fill(databaseSchema, ConnectionString);
-            (new GenerateFullTextIndex(this)).Fill(databaseSchema, ConnectionString);
+
+            if (options.Ignore.FilterIndex)
+            {
+                (new GenerateIndex(this)).Fill(databaseSchema, ConnectionString);
+                (new GenerateFullTextIndex(this)).Fill(databaseSchema, ConnectionString);
+            }
             (new GenerateUserDataTypes(this)).Fill(databaseSchema, ConnectionString, messages);
             (new GenerateXMLSchemas(this)).Fill(databaseSchema, ConnectionString);
             (new GenerateSchemas(this)).Fill(databaseSchema, ConnectionString);
@@ -135,7 +139,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
                 {
                     try
                     {*/
-            (new GenerateStoreProcedures(this)).Fill(databaseSchema, ConnectionString);
+            (new GenerateStoredProcedures(this)).Fill(databaseSchema, ConnectionString);
             (new GenerateFunctions(this)).Fill(databaseSchema, ConnectionString);
             (new GenerateTriggers(this)).Fill(databaseSchema, ConnectionString, messages);
             (new GenerateTextObjects(this)).Fill(databaseSchema, ConnectionString);
@@ -181,7 +185,7 @@ namespace DBDiff.Schema.SQLServer.Generates.Generates
 
         public static Database Compare(Database databaseOriginalSchema, Database databaseCompareSchema)
         {
-            Database merge = CompareDatabase.GenerateDiferences(databaseOriginalSchema, databaseCompareSchema);
+            Database merge = CompareDatabase.GenerateDifferences(databaseOriginalSchema, databaseCompareSchema);
             return merge;
         }
     }

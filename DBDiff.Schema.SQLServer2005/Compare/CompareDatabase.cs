@@ -6,32 +6,32 @@ namespace DBDiff.Schema.SQLServer.Generates.Compare
 {
     internal static class CompareDatabase
     {
-        public static Database GenerateDiferences(Database Origen, Database Destino)
+        public static Database GenerateDifferences(Database origin, Database destination)
         {
             try
             {
-                Database data = Origen;
-                (new CompareTables()).GenerateDiferences<Database>(Origen.Tables, Destino.Tables);
-                (new CompareAssemblies()).GenerateDiferences<Database>(Origen.Assemblies, Destino.Assemblies);
-                (new CompareUserDataTypes()).GenerateDiferences<Database>(Origen.UserTypes, Destino.UserTypes);
-                (new CompareXMLSchemas()).GenerateDiferences<Database>(Origen.XmlSchemas, Destino.XmlSchemas);
-                (new CompareSchemas()).GenerateDiferences<Database>(Origen.Schemas, Destino.Schemas);
-                (new CompareFileGroups()).GenerateDiferences<Database>(Origen.FileGroups, Destino.FileGroups);
-                (new CompareRules()).GenerateDiferences<Database>(Origen.Rules, Destino.Rules);
-                (new CompareDDLTriggers()).GenerateDiferences<Database>(Origen.DDLTriggers, Destino.DDLTriggers);
-                (new CompareSynonyms()).GenerateDiferences<Database>(Origen.Synonyms, Destino.Synonyms);
-                (new CompareUsers()).GenerateDiferences<Database>(Origen.Users, Destino.Users);
-                (new CompareStoreProcedures()).GenerateDiferences<Database>(Origen.Procedures, Destino.Procedures);
-                (new CompareCLRStoreProcedure()).GenerateDiferences<Database>(Origen.CLRProcedures, Destino.CLRProcedures);
-                (new CompareCLRFunction()).GenerateDiferences<Database>(Origen.CLRFunctions, Destino.CLRFunctions);
-                (new CompareViews()).GenerateDiferences<Database>(Origen.Views, Destino.Views);
-                (new CompareFunctions()).GenerateDiferences<Database>(Origen.Functions, Destino.Functions);
-                (new CompareRoles()).GenerateDiferences<Database>(Origen.Roles, Destino.Roles);
-                (new ComparePartitionFunction()).GenerateDiferences<Database>(Origen.PartitionFunctions, Destino.PartitionFunctions);
-                (new ComparePartitionSchemes()).GenerateDiferences<Database>(Origen.PartitionSchemes, Destino.PartitionSchemes);
-                (new CompareTableType()).GenerateDiferences<Database>(Origen.TablesTypes, Destino.TablesTypes);
-                (new CompareFullText()).GenerateDiferences<Database>(Origen.FullText, Destino.FullText);
-                data.SourceInfo = Destino.Info;
+                Database data = origin;
+                (new CompareTables()).GenerateDifferences<Database>(origin.Tables, destination.Tables);
+                (new CompareAssemblies()).GenerateDifferences<Database>(origin.Assemblies, destination.Assemblies);
+                (new CompareUserDataTypes()).GenerateDifferences<Database>(origin.UserTypes, destination.UserTypes);
+                (new CompareXMLSchemas()).GenerateDifferences<Database>(origin.XmlSchemas, destination.XmlSchemas);
+                (new CompareSchemas()).GenerateDifferences<Database>(origin.Schemas, destination.Schemas);
+                (new CompareFileGroups()).GenerateDifferences<Database>(origin.FileGroups, destination.FileGroups);
+                (new CompareRules()).GenerateDifferences<Database>(origin.Rules, destination.Rules);
+                (new CompareDDLTriggers()).GenerateDifferences<Database>(origin.DDLTriggers, destination.DDLTriggers);
+                (new CompareSynonyms()).GenerateDifferences<Database>(origin.Synonyms, destination.Synonyms);
+                (new CompareUsers()).GenerateDifferences<Database>(origin.Users, destination.Users);
+                (new CompareStoredProcedures()).GenerateDifferences<Database>(origin.Procedures, destination.Procedures);
+                (new CompareCLRStoredProcedure()).GenerateDifferences<Database>(origin.CLRProcedures, destination.CLRProcedures);
+                (new CompareCLRFunction()).GenerateDifferences<Database>(origin.CLRFunctions, destination.CLRFunctions);
+                (new CompareViews()).GenerateDifferences<Database>(origin.Views, destination.Views);
+                (new CompareFunctions()).GenerateDifferences<Database>(origin.Functions, destination.Functions);
+                (new CompareRoles()).GenerateDifferences<Database>(origin.Roles, destination.Roles);
+                (new ComparePartitionFunction()).GenerateDifferences<Database>(origin.PartitionFunctions, destination.PartitionFunctions);
+                (new ComparePartitionSchemes()).GenerateDifferences<Database>(origin.PartitionSchemes, destination.PartitionSchemes);
+                (new CompareTableType()).GenerateDifferences<Database>(origin.TablesTypes, destination.TablesTypes);
+                (new CompareFullText()).GenerateDifferences<Database>(origin.FullText, destination.FullText);
+                data.SourceInfo = destination.Info;
                 return data;
             }
             catch (SchemaException)

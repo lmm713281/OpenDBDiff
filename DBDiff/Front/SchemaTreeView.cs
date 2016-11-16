@@ -18,6 +18,8 @@ namespace DBDiff.Front
         public delegate void SchemaHandler(string ObjectFullName);
         public event SchemaHandler OnSelectItem;
 
+        private bool busy = false;
+
         public SchemaTreeView()
         {
             InitializeComponent();
@@ -76,7 +78,7 @@ namespace DBDiff.Front
             }
         }
 
-        private void ReadPropertys(Type item, TreeNodeCollection nodes, ISchemaBase schema)
+        private void ReadProperties(Type item, TreeNodeCollection nodes, ISchemaBase schema)
         {
             PropertyInfo[] pi = item.GetProperties();
             nodes.Clear();
@@ -103,7 +105,7 @@ namespace DBDiff.Front
             {
                 if (CanNodeAdd(item))
                 {
-                    TreeNode subnode = node.Nodes.Add((attr.IsFullName ? item.FullName : item.Name));
+                    TreeNode subnode = node.Nodes.Add(item.Id.ToString(), (attr.IsFullName ? item.FullName : item.Name));
                     if (item.Status == Enums.ObjectStatusType.DropStatus)
                     {
                         subnode.ForeColor = Color.Red;
@@ -140,69 +142,131 @@ namespace DBDiff.Front
 
         private void RebuildSchemaTree()
         {
-            treeView1.Visible = false;
+
+            string currentlySelectedNode = treeView1.SelectedNode != null ? treeView1.SelectedNode.Name : null;
+            string currentTopNode = treeView1.TopNode != null ? treeView1.TopNode.Name : null;
+
+            this.busy = true;
+            treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
-            TreeNode databaseNode = treeView1.Nodes.Add(databaseSource.Name);
-            ReadPropertys(databaseSource.GetType(), databaseNode.Nodes, databaseSource);
+            TreeNode databaseNode = treeView1.Nodes.Add("root", databaseSource.Name);
+            ReadProperties(databaseSource.GetType(), databaseNode.Nodes, databaseSource);
             treeView1.Sort();
             databaseNode.ImageKey = "Database";
             databaseNode.Expand();
-            treeView1.Visible = true;
+
+            if (currentlySelectedNode != null)
+            {
+                var nodes = treeView1.Nodes.Find(currentlySelectedNode, true);
+                if (nodes.Any()) treeView1.SelectedNode = nodes.First();
+            }
+
+            if (currentTopNode != null)
+            {
+                var nodes = treeView1.Nodes.Find(currentTopNode, true);
+                if (nodes.Any()) treeView1.TopNode = nodes.First();
+            }
+
+            treeView1.EndUpdate();
+            this.busy = false;
+            treeView1.Focus();
         }
 
         private Boolean CanNodeAdd(ISchemaBase item)
         {
-            if ((item.Status == Enums.ObjectStatusType.DropStatus) && (FilterMissingObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.CreateStatus) && (FilterNewObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.AlterStatus) && (FilterDiferentObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.AlterWhitespaceStatus) && (FilterDiferentObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.RebuildStatus) && (FilterDiferentObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.DisabledStatus) && (FilterDiferentObjects)) return true;
-            if ((item.Status == Enums.ObjectStatusType.UpdateStatus) && (FilterDiferentObjects)) return true;
-            return true;
+            Enums.ObjectStatusType checkedStatus = Enums.ObjectStatusType.OriginalStatus;
+            // OriginalStatus == 0, so have to treat differently
+            if (item.Status == Enums.ObjectStatusType.OriginalStatus && ShowUnchangedItems) return true;
+
+            if (item.HasState(Enums.ObjectStatusType.DropStatus) && ShowMissingItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.DropStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.CreateStatus) && ShowNewItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.CreateStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.AlterStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.AlterStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.AlterWhitespaceStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.AlterWhitespaceStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.AlterBodyStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.AlterBodyStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.RebuildStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.RebuildStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.RebuildDependenciesStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.RebuildDependenciesStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.ChangeOwner) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.ChangeOwner;
+
+            if (item.HasState(Enums.ObjectStatusType.DropOlderStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.DropOlderStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.BindStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.BindStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.PermissionSet) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.PermissionSet;
+
+            if (item.HasState(Enums.ObjectStatusType.DisabledStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.DisabledStatus;
+
+            if (item.HasState(Enums.ObjectStatusType.UpdateStatus) && ShowChangedItems) return true;
+            checkedStatus = checkedStatus | Enums.ObjectStatusType.UpdateStatus;
+
+
+            // At the end, we should have check all possible statuses.
+            Enums.ObjectStatusType expectedTotalStatus = Enums.ObjectStatusType.OriginalStatus;
+            Enum.GetValues(typeof(Enums.ObjectStatusType)).Cast<Enums.ObjectStatusType>().ToList().ForEach((s) => expectedTotalStatus = expectedTotalStatus | s);
+
+            if (expectedTotalStatus != checkedStatus)
+                throw new Exception(string.Format("The OjbectStatusType '{0:G}' wasn't implemented in the CanNodeAdd() method. Developer, please ensure that all values in the Enum are checked.", (Enums.ObjectStatusType)(expectedTotalStatus - checkedStatus)));
+
+            return false;
         }
 
-        public Boolean FilterNewObjects
+        public Boolean ShowNewItems
         {
             get { return chkNew.Checked; }
             set { chkNew.Checked = value; }
         }
 
-        public Boolean FilterMissingObjects
+        public Boolean ShowMissingItems
         {
             get { return chkOld.Checked; }
             set { chkOld.Checked = value; }
         }
 
-        public Boolean FilterDiferentObjects
+        public Boolean ShowChangedItems
         {
-            get { return chkDiferent.Checked; }
-            set { chkDiferent.Checked = value; }
+            get { return chkDifferent.Checked; }
+            set { chkDifferent.Checked = value; }
         }
 
-        private void chkDiferent_CheckedChanged(object sender, EventArgs e)
+        public Boolean ShowUnchangedItems
         {
-            RebuildSchemaTree();
+            get { return chkShowUnchangedItems.Checked; }
+            set { chkShowUnchangedItems.Checked = value; }
         }
 
-        private void chkOld_CheckedChanged(object sender, EventArgs e)
-        {
-            RebuildSchemaTree();
-        }
-
-        private void chkNew_CheckedChanged(object sender, EventArgs e)
+        private void FilterCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             RebuildSchemaTree();
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (busy) return;
+
             ISchemaBase item = ((ISchemaBase)e.Node.Tag);
             if (item != null)
             {
                 if (item.ObjectType == Enums.ObjectType.Table
                     || item.ObjectType == Enums.ObjectType.View)
-                    ReadPropertys(item.GetType(), e.Node.Nodes, item);
+                    ReadProperties(item.GetType(), e.Node.Nodes, item);
                 if (OnSelectItem != null) OnSelectItem(item.FullName);
             }
         }
@@ -214,6 +278,19 @@ namespace DBDiff.Front
                 {
                     node.Checked = e.Node.Checked;
                 }
+            }
+        }
+
+        public string SelectedNode
+        {
+            get
+            {
+                if (treeView1.SelectedNode == null) return null;
+
+                var item = treeView1.SelectedNode.Tag as ISchemaBase;
+                if (item == null) return null;
+
+                return item.FullName;
             }
         }
     }
