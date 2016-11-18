@@ -126,13 +126,14 @@ namespace DBDiff.Front
                     origin = progress.Source;
                     destination = progress.Destination;
 
-                    txtSyncScript.ConfigurationManager.Language = "mssql";
-                    txtSyncScript.IsReadOnly = false;
-                    txtSyncScript.Styles.LineNumber.BackColor = Color.White;
-                    txtSyncScript.Styles.LineNumber.IsVisible = false;
+                    txtSyncScript.Lexer = Lexer.Sql;
+                    txtSyncScript.ReadOnly = false;
+                    //TODO: fix styles
+                    //txtSyncScript.Styles.LineNumber.BackColor = Color.White;
+                    //txtSyncScript.Styles.LineNumber.IsVisible = false;
                     errorLocation = "Generating Synchronized Script";
                     txtSyncScript.Text = destination.ToSqlDiff(_selectedSchemas).ToSQL();
-                    txtSyncScript.IsReadOnly = true;
+                    txtSyncScript.ReadOnly = true;
                     schemaTreeView1.DatabaseSource = destination;
                     schemaTreeView1.DatabaseDestination = origin;
                     schemaTreeView1.OnSelectItem += new SchemaTreeView.SchemaHandler(schemaTreeView1_OnSelectItem);
@@ -162,8 +163,8 @@ namespace DBDiff.Front
         {
             if (ObjectFullName == null) return;
 
-            txtNewObject.IsReadOnly = false;
-            txtOldObject.IsReadOnly = false;
+            txtNewObject.ReadOnly = false;
+            txtOldObject.ReadOnly = false;
             txtNewObject.Text = "";
             txtOldObject.Text = "";
 
@@ -196,8 +197,8 @@ namespace DBDiff.Front
                 if (database.Find(ObjectFullName).Status != Enums.ObjectStatusType.CreateStatus)
                     txtOldObject.Text = database.Find(ObjectFullName).ToSql();
             }
-            txtNewObject.IsReadOnly = true;
-            txtOldObject.IsReadOnly = true;
+            txtNewObject.ReadOnly = true;
+            txtOldObject.ReadOnly = true;
 
             var diff = (new SideBySideDiffBuilder(new Differ())).BuildDiffModel(txtOldObject.Text, txtNewObject.Text);
 
@@ -205,10 +206,10 @@ namespace DBDiff.Front
             DiffPiece newLine, oldLine;
             var markers = new Marker[] { txtDiff.Markers[0], txtDiff.Markers[1], txtDiff.Markers[2], txtDiff.Markers[3] };
             foreach (var marker in markers) marker.Symbol = MarkerSymbol.Background;
-            markers[0].BackColor = Color.LightGreen;
-            markers[1].BackColor = Color.LightCyan;
-            markers[2].BackColor = Color.LightSalmon;
-            markers[3].BackColor = Color.PeachPuff;
+            markers[0].SetBackColor(Color.LightGreen);
+            markers[1].SetBackColor(Color.LightCyan);
+            markers[2].SetBackColor(Color.LightSalmon);
+            markers[3].SetBackColor(Color.PeachPuff);
 
             var indexes = new List<int>[] { new List<int>(), new List<int>(), new List<int>(), new List<int>() };
             var index = 0;
@@ -248,7 +249,8 @@ namespace DBDiff.Front
             {
                 foreach (var ind in indexes[i])
                 {
-                    txtDiff.Lines[ind].AddMarker(markers[i]);
+                    //TODO: fix markers
+                    //txtDiff.Lines[ind].AddMarker(markers[i]);
                 }
             }
         }
@@ -265,9 +267,9 @@ namespace DBDiff.Front
             if (db != null)
             {
                 this._selectedSchemas = this.schemaTreeView1.GetCheckedSchemas();
-                this.txtSyncScript.IsReadOnly = false;
+                this.txtSyncScript.ReadOnly = false;
                 this.txtSyncScript.Text = db.ToSqlDiff(this._selectedSchemas).ToSQL();
-                this.txtSyncScript.IsReadOnly = false;
+                this.txtSyncScript.ReadOnly = false;
             }
         }
 
@@ -666,17 +668,19 @@ Clicking 'OK' will result in the following:
         private void Form1_Load(object sender, EventArgs e)
         {
             ShowSQL2005();
-            txtNewObject.ConfigurationManager.Language = "mssql";
-            txtNewObject.IsReadOnly = false;
-            txtNewObject.Styles.LineNumber.BackColor = Color.White;
-            txtNewObject.Styles.LineNumber.IsVisible = false;
-            txtOldObject.ConfigurationManager.Language = "mssql";
-            txtOldObject.IsReadOnly = false;
-            txtOldObject.Styles.LineNumber.BackColor = Color.White;
-            txtOldObject.Styles.LineNumber.IsVisible = false;
-            txtDiff.ConfigurationManager.Language = "mssql";
-            txtDiff.IsReadOnly = false;
-            txtDiff.Styles.LineNumber.IsVisible = false;
+
+            //TODO: fix styles
+            txtNewObject.Lexer = Lexer.Sql;
+            txtNewObject.ReadOnly = false;
+            //txtNewObject.Styles.LineNumber.BackColor = Color.White;
+            //txtNewObject.Styles.LineNumber.IsVisible = false;
+            txtOldObject.Lexer = Lexer.Sql;
+            txtOldObject.ReadOnly = false;
+            //txtOldObject.Styles.LineNumber.BackColor = Color.White;
+            //txtOldObject.Styles.LineNumber.IsVisible = false;
+            txtDiff.Lexer = Lexer.Sql;
+            txtDiff.ReadOnly = false;
+            //txtDiff.Styles.LineNumber.IsVisible = false;
             txtDiff.Margins[0].Width = 20;
             Project LastConfiguration = Project.GetLastConfiguration();
             if (LastConfiguration != null)
