@@ -4,7 +4,7 @@ using ScintillaNET;
 
 namespace DBDiff.Front
 {
-    partial class Form1
+    partial class PrincipalForm
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,7 @@ namespace DBDiff.Front
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PrincipalForm));
             this.lblMessage = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -60,7 +60,7 @@ namespace DBDiff.Front
             this.GroupDb = new System.Windows.Forms.GroupBox();
             this.optSybase = new System.Windows.Forms.RadioButton();
             this.optMySQL = new System.Windows.Forms.RadioButton();
-            this.optSQL2005 = new System.Windows.Forms.RadioButton();
+            this.optMSSQL = new System.Windows.Forms.RadioButton();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.btnOptions = new System.Windows.Forms.Button();
             this.btnCopy = new System.Windows.Forms.Button();
@@ -162,16 +162,6 @@ namespace DBDiff.Front
             this.txtNewObject.Location = new System.Drawing.Point(3, 3);
             this.txtNewObject.Name = "txtNewObject";
             this.txtNewObject.Size = new System.Drawing.Size(450, 378);
-            //TODO: fix styles
-            //this.txtNewObject.Styles.BraceBad.Size = 9F;
-            //this.txtNewObject.Styles.BraceLight.Size = 9F;
-            //this.txtNewObject.Styles.ControlChar.Size = 9F;
-            //this.txtNewObject.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
-            //this.txtNewObject.Styles.Default.Size = 9F;
-            //this.txtNewObject.Styles.IndentGuide.Size = 9F;
-            //this.txtNewObject.Styles.LastPredefined.Size = 9F;
-            //this.txtNewObject.Styles.LineNumber.Size = 9F;
-            //this.txtNewObject.Styles.Max.Size = 9F;
             this.txtNewObject.TabIndex = 0;
             //
             // tabPage5
@@ -192,16 +182,6 @@ namespace DBDiff.Front
             this.txtOldObject.Location = new System.Drawing.Point(3, 3);
             this.txtOldObject.Name = "txtOldObject";
             this.txtOldObject.Size = new System.Drawing.Size(450, 378);
-            //TODO: fix styles
-            //this.txtOldObject.Styles.BraceBad.Size = 9F;
-            //this.txtOldObject.Styles.BraceLight.Size = 9F;
-            //this.txtOldObject.Styles.ControlChar.Size = 9F;
-            //this.txtOldObject.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
-            //this.txtOldObject.Styles.Default.Size = 9F;
-            //this.txtOldObject.Styles.IndentGuide.Size = 9F;
-            //this.txtOldObject.Styles.LastPredefined.Size = 9F;
-            //this.txtOldObject.Styles.LineNumber.Size = 9F;
-            //this.txtOldObject.Styles.Max.Size = 9F;
             this.txtOldObject.TabIndex = 0;
             //
             // tabPage6
@@ -349,9 +329,6 @@ namespace DBDiff.Front
             this.txtSyncScript.Location = new System.Drawing.Point(0, 0);
             this.txtSyncScript.Name = "txtSyncScript";
             this.txtSyncScript.Size = new System.Drawing.Size(802, 449);
-            //TODO: fix styles
-            //this.txtSyncScript.Styles.LineNumber.BackColor = System.Drawing.Color.Transparent;
-            //this.txtSyncScript.Styles.LineNumber.IsVisible = false;
             this.txtSyncScript.TabIndex = 0;
             //
             // tabPage3
@@ -382,7 +359,7 @@ namespace DBDiff.Front
             //
             this.GroupDb.Controls.Add(this.optSybase);
             this.GroupDb.Controls.Add(this.optMySQL);
-            this.GroupDb.Controls.Add(this.optSQL2005);
+            this.GroupDb.Controls.Add(this.optMSSQL);
             this.GroupDb.Location = new System.Drawing.Point(7, 0);
             this.GroupDb.Name = "GroupDb";
             this.GroupDb.Size = new System.Drawing.Size(369, 36);
@@ -414,18 +391,18 @@ namespace DBDiff.Front
             this.optMySQL.Visible = false;
             this.optMySQL.CheckedChanged += new System.EventHandler(this.optMySQL_CheckedChanged);
             //
-            // optSQL2005
+            // optMSSQL
             //
-            this.optSQL2005.AutoSize = true;
-            this.optSQL2005.Checked = true;
-            this.optSQL2005.Location = new System.Drawing.Point(6, 12);
-            this.optSQL2005.Name = "optSQL2005";
-            this.optSQL2005.Size = new System.Drawing.Size(107, 17);
-            this.optSQL2005.TabIndex = 1;
-            this.optSQL2005.TabStop = true;
-            this.optSQL2005.Text = "SQL Server 2005";
-            this.optSQL2005.UseVisualStyleBackColor = true;
-            this.optSQL2005.CheckedChanged += new System.EventHandler(this.optSQL2005_CheckedChanged);
+            this.optMSSQL.AutoSize = true;
+            this.optMSSQL.Checked = true;
+            this.optMSSQL.Location = new System.Drawing.Point(6, 12);
+            this.optMSSQL.Name = "optMSSQL";
+            this.optMSSQL.Size = new System.Drawing.Size(107, 17);
+            this.optMSSQL.TabIndex = 1;
+            this.optMSSQL.TabStop = true;
+            this.optMSSQL.Text = "Microsoft SQL Server";
+            this.optMSSQL.UseVisualStyleBackColor = true;
+            this.optMSSQL.CheckedChanged += new System.EventHandler(this.optMSSQL_CheckedChanged);
             //
             // saveFileDialog1
             //
@@ -556,7 +533,6 @@ namespace DBDiff.Front
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(808, 159);
             this.panel2.TabIndex = 10;
-            this.panel2.Resize += new System.EventHandler(this.panel2_Resize);
             //
             // PanelDestination
             //
@@ -632,7 +608,7 @@ namespace DBDiff.Front
             this.Controls.Add(this.GroupDb);
             this.Controls.Add(this.tabControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "PrincipalForm";
             this.Text = "Open DBDiff Beta ";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -666,7 +642,7 @@ namespace DBDiff.Front
         private TabPage tabPage1;
         private Button btnCompare;
         private GroupBox GroupDb;
-        private RadioButton optSQL2005;
+        private RadioButton optMSSQL;
         private RadioButton optMySQL;
         private RadioButton optSybase;
         private Button btnSaveAs;
