@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="OpenDBDiff.WPFUI.Features.DatabaseSelectorUserControl.DatabaseSelectorUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:clr="clr-namespace:System;assembly=mscorlib"
+             xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:layout="clr-namespace:OpenDBDiff.WPFUI.Presentation.Layout"
+             xmlns:local="clr-namespace:OpenDBDiff.WPFUI.Features.DatabaseSelectorUserControl"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+             xmlns:qc="clr-namespace:QuickConverter;assembly=QuickConverter"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="500"
+             DataContext="{Binding DatabaseSelectorViewModel, Source={StaticResource Locator}}"
+             md:DialogServiceViews.IsRegistered="True">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/OpenDBDiff.WPFUI;component/Style/Controls.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <clr:Double x:Key="LabelWidth">100</clr:Double>
+
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <UserControl.InputBindings>
+  </UserControl.InputBindings>
+
+  <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+    <DockPanel layout:Spacing.Vertical="3">
+      <DockPanel DockPanel.Dock="Top">
+        <Image Source="/OpenDBDiff.WPFUI;component/Style/images/database_yellow.png" Width="16" Height="16" DockPanel.Dock="Left"/>
+        <Label Content="Source database" />
+      </DockPanel>
+
+      <Separator DockPanel.Dock="Top" />
+
+      <DockPanel DockPanel.Dock="Top">
+        <Label Content="Server name:" Width="{StaticResource LabelWidth}"/>
+        <TextBox Text="{Binding Path=ServerName, UpdateSourceTrigger=PropertyChanged}"/>
+      </DockPanel>
+      <DockPanel DockPanel.Dock="Top">
+        <Label Content="Authentication:" Width="{StaticResource LabelWidth}" />
+
+        <StackPanel Orientation="Vertical">
+          <RadioButton GroupName="AuthenticationMethodRatioButtonGroup" IsChecked="{qc:Binding '!$P', P={Binding Path=IsWindowsAuthentication}}" Content="SQL Server authentication" />
+          <RadioButton GroupName="AuthenticationMethodRatioButtonGroup" IsChecked="{Binding Path=IsWindowsAuthentication}" Content="Windows authentication" />
+        </StackPanel>
+
+      </DockPanel>
+      <DockPanel DockPanel.Dock="Top">
+        <Label Content="Username:" Width="{StaticResource LabelWidth}"/>
+        <TextBox Text="{Binding Path=Username, UpdateSourceTrigger=PropertyChanged}" />
+      </DockPanel>
+      <DockPanel DockPanel.Dock="Top">
+        <Label Content="Password:" Width="{StaticResource LabelWidth}"/>
+        <PasswordBox Name="PasswordBox">
+          <i:Interaction.Triggers>
+            <i:EventTrigger EventName="PasswordChanged">
+              <cmd:EventToCommand Command="{Binding Path=PasswordChangedCommand}" PassEventArgsToCommand="True" />
+            </i:EventTrigger>
+          </i:Interaction.Triggers>
+        </PasswordBox>
+      </DockPanel>
+      <DockPanel DockPanel.Dock="Top">
+        <Label Content="Database" Width="{StaticResource LabelWidth}"/>
+        <ComboBox />
+      </DockPanel>
+      <StackPanel DockPanel.Dock="Bottom">
+        <DockPanel layout:MarginSetter.Margin="7 0">
+          <Button x:Name="TestButton"
+                  DockPanel.Dock="Right"
+                  HorizontalAlignment="Right"
+                  MinWidth="80"
+                  Command="{Binding Path=TestConnectionCommand}">
+            <StackPanel Orientation="Horizontal">
+              <Image Source="/OpenDBDiff.WPFUI;component/Style/images/database_connect.png" Width="16" Height="16" Stretch="Fill" />
+              <Label>Test</Label>
+            </StackPanel>
+          </Button>
+        </DockPanel>
+      </StackPanel>
+
+    </DockPanel>
+  </DockPanel>
+
+</UserControl>

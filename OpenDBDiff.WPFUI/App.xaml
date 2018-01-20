@@ -1,0 +1,22 @@
+﻿<Application x:Class="OpenDBDiff.WPFUI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:OpenDBDiff.WPFUI"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             d1p1:Ignorable="d"
+             DispatcherUnhandledException="Application_DispatcherUnhandledException"
+             StartupUri="Features/Main/MainWindow.xaml">
+    <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <!-- Some styles need to be defined in App.xaml, else they won't apply to TextBlock -->
+        <!--https://blogs.msdn.microsoft.com/wpfsdk/2009/08/27/implicit-styles-templates-controls-and-frameworkelements/-->
+        <ResourceDictionary Source="/Style/Controls.xaml" />
+        <ResourceDictionary Source="/Style/Shared.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+    </ResourceDictionary>
+    </Application.Resources>
+</Application>
