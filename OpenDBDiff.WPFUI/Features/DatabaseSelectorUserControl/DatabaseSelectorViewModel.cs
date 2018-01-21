@@ -22,6 +22,7 @@ namespace OpenDBDiff.WPFUI.Features.DatabaseSelectorUserControl
             this.dialogService = dialogService;
             if (this.IsInDesignMode || true)
             {
+                this.Title = "Some database";
                 this.ServerName = "localhost\\sqlexpress";
                 //this.Username = "igitur";
                 //this.Password = "asdf".ConvertToSecureString();
@@ -32,6 +33,7 @@ namespace OpenDBDiff.WPFUI.Features.DatabaseSelectorUserControl
             this.TestConnectionCommand.PropertyChanged += AsyncCommand_PropertyChanged;
         }
 
+        public string Title { get; set; }
         public string Database { get; set; }
         public bool IsWindowsAuthentication { get; set; }
         public SecureString Password { get; set; }

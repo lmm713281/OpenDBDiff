@@ -32,7 +32,7 @@
     <DockPanel layout:Spacing.Vertical="3">
       <DockPanel DockPanel.Dock="Top">
         <Image Source="/OpenDBDiff.WPFUI;component/Style/images/database_yellow.png" Width="16" Height="16" DockPanel.Dock="Left"/>
-        <Label Content="Source database" />
+        <Label Content="{Binding Path=Title}" />
       </DockPanel>
 
       <Separator DockPanel.Dock="Top" />
@@ -45,8 +45,8 @@
         <Label Content="Authentication:" Width="{StaticResource LabelWidth}" />
 
         <StackPanel Orientation="Vertical">
-          <RadioButton GroupName="AuthenticationMethodRatioButtonGroup" IsChecked="{qc:Binding '!$P', P={Binding Path=IsWindowsAuthentication}}" Content="SQL Server authentication" />
-          <RadioButton GroupName="AuthenticationMethodRatioButtonGroup" IsChecked="{Binding Path=IsWindowsAuthentication}" Content="Windows authentication" />
+          <RadioButton IsChecked="{qc:Binding '!$P', ConvertBack='!$value', P={Binding Path=IsWindowsAuthentication, Mode=TwoWay}}" Content="SQL Server authentication" />
+          <RadioButton IsChecked="{Binding Path=IsWindowsAuthentication}" Content="Windows authentication" />
         </StackPanel>
 
       </DockPanel>

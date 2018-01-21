@@ -11,6 +11,7 @@
         xmlns:local="clr-namespace:OpenDBDiff.WPFUI"
         xmlns:lvl="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
         xmlns:qc="clr-namespace:QuickConverter;assembly=QuickConverter"
+        xmlns:sc="http://scintillanet.codeplex.com"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         mc:Ignorable="d"
         md:DialogServiceViews.IsRegistered="True"
@@ -40,14 +41,8 @@
 
   <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
     <Menu DockPanel.Dock="Top">
-      <MenuItem Header="_Administration">
-        <MenuItem x:Name="AdministerCountriesMenuItem" Header="_Countries" />
-        <MenuItem x:Name="AdministerBondsMenuItem" Header="_Bonds" />
-        <MenuItem x:Name="AdministerYieldCurvesMenuItem" Header="_Yield curves"  />
-        <MenuItem x:Name="AdministerUsersMenuItem" Header="_Users"  />
-      </MenuItem>
-      <MenuItem Header="_Tools">
-        <MenuItem x:Name="CompareCurvesMenuItem" Header="_Compare curves"  />
+      <MenuItem Header="_Project">
+        <MenuItem x:Name="OpenProjectCommandMenuItem" Header="_Open project..."/>
       </MenuItem>
       <MenuItem Header="_Help" >
         <MenuItem x:Name="AboutMenuItem" x:Uid="aboutItem" Header="_About">
@@ -80,43 +75,65 @@
       <StatusBarItem Grid.Column="2">
       </StatusBarItem>
     </StatusBar>
-    <DockPanel>
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="30*"/>
-          <ColumnDefinition Width="5" />
-          <ColumnDefinition Width="70*"/>
-        </Grid.ColumnDefinitions>
-
-        <DockPanel Grid.Column="0" x:Name="InputPanel" Style="{DynamicResource PaddedDockPanel}" HorizontalAlignment="Stretch">
-          <StackPanel DockPanel.Dock="Bottom">
-            <DockPanel>
-              <dbsc:DatabaseSelectorUserControl />
-            </DockPanel>
+    <DockPanel Style="{StaticResource PaddedDockPanel}">
+      <DockPanel>
+        <Expander Header="Server connections" IsExpanded="True" DockPanel.Dock="Top">
+          <StackPanel Orientation="Horizontal" layout:MarginSetter.Margin="10" layout:Spacing.Horizontal="50">
+            <dbsc:DatabaseSelectorUserControl x:Name="LeftDatabaseSelector" DataContext="{Binding Path=LeftDatabaseSelectorViewModel}" />
+            <dbsc:DatabaseSelectorUserControl x:Name="RightDatabaseSelector" DataContext="{Binding Path=RightDatabaseSelectorViewModel}"/>
+            <StackPanel Orientation="Vertical">
+              <Button Content="Compare" />
+              <Button Content="Options" />
+            </StackPanel>
           </StackPanel>
-        </DockPanel>
+        </Expander>
+        <Grid DockPanel.Dock="Bottom">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="70*"/>
+          </Grid.ColumnDefinitions>
 
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="Gray"/>
+          <DockPanel>
+            <Grid DockPanel.Dock="Top">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="120" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+              </Grid.RowDefinitions>
+              <CheckBox Grid.Row="0" Grid.Column="0" Content="Unchanged items" />
+              <CheckBox Grid.Row="0" Grid.Column="1" Content="Changed items" />
+              <CheckBox Grid.Row="1" Grid.Column="0" Content="New items" />
+              <CheckBox Grid.Row="1" Grid.Column="1" Content="Missing items" />
+            </Grid>
+            <TreeView DockPanel.Dock="Bottom">
 
-        <DockPanel Grid.Column="2" x:Name="OutputPanel" Style="{DynamicResource PaddedDockPanel}">
-          <StackPanel DockPanel.Dock="Bottom">
-            <DockPanel layout:MarginSetter.Margin="7 0">
-              <Button x:Name="SaveButton" DockPanel.Dock="Right" HorizontalAlignment="Right" MinWidth="80" >
-                <StackPanel Orientation="Horizontal">
-                  <Label>Save</Label>
-                </StackPanel>
-              </Button>
-              <Button x:Name="ExportButton" DockPanel.Dock="Right" HorizontalAlignment="Right" MinWidth="80" >
-                <StackPanel Orientation="Horizontal">
-                  <Label>Export</Label>
-                </StackPanel>
-              </Button>
-            </DockPanel>
-          </StackPanel>
-          <DockPanel VerticalAlignment="Stretch" layout:MarginSetter.LastItemMargin="0 0 0 7">
+            </TreeView>
           </DockPanel>
-        </DockPanel>
-      </Grid>
+
+          <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" Background="Gray"/>
+
+          <DockPanel Grid.Column="2" x:Name="OutputPanel" Style="{DynamicResource PaddedDockPanel}">
+            <StackPanel DockPanel.Dock="Bottom">
+              <DockPanel layout:MarginSetter.Margin="7 0">
+                <Button x:Name="ReportButton" DockPanel.Dock="Right" HorizontalAlignment="Right" MinWidth="80" >
+                  <StackPanel Orientation="Horizontal">
+                    <Label>Report</Label>
+                  </StackPanel>
+                </Button>
+              </DockPanel>
+            </StackPanel>
+            <DockPanel VerticalAlignment="Stretch" layout:MarginSetter.LastItemMargin="0 0 0 7">
+              <sc:ScintillaWPF
+                Text="select * from Users"
+                LexerLanguage="mssql"/>
+            </DockPanel>
+          </DockPanel>
+        </Grid>
+      </DockPanel>
     </DockPanel>
   </DockPanel>
 </Window>
