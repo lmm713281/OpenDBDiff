@@ -589,8 +589,7 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Model
             if (origin == null) throw new ArgumentNullException("origin");
             if ((origin.Rule.Name != null) && (destination.Rule.Name == null)) return false;
             if ((origin.Rule.Name == null) && (destination.Rule.Name != null)) return false;
-            if (origin.Rule.Name != null)
-                if (!origin.Rule.Name.Equals(destination.Rule.Name)) return false;
+            if (origin.Rule.Name != null && !origin.Rule.Name.Equals(destination.Rule.Name)) return false;
             return true;
         }
 
@@ -607,9 +606,8 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Model
             if (!origin.IsComputed)
             {
                 if (origin.IsXmlDocument != destination.IsXmlDocument) return false;
-                if ((origin.XmlSchema == null) && (destination.XmlSchema != null)) return false;
-                if (origin.XmlSchema != null)
-                    if (!origin.XmlSchema.Equals(destination.XmlSchema)) return false;
+                if (origin.XmlSchema == null && destination.XmlSchema != null) return false;
+                if (origin.XmlSchema != null && !origin.XmlSchema.Equals(destination.XmlSchema)) return false;
                 if (origin.IsNullable != destination.IsNullable) return false;
                 if (origin.IsFileStream != destination.IsFileStream) return false;
                 if (origin.IsSparse != destination.IsSparse) return false;

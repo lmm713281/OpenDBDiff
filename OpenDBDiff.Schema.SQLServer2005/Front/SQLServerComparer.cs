@@ -11,6 +11,8 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Front
         {
             if (origin is Model.Database && destination is Model.Database)
             {
+                // TODO: implement handler
+                //Generate.OnCompareProgress += some handler
                 return Generate.Compare(origin as Model.Database, destination as Model.Database);
             }
             else if (!(origin is Model.Database))

@@ -28,7 +28,7 @@ namespace OpenDBDiff.Front
         private List<ISchemaBase> _selectedSchemas = new List<ISchemaBase>();
 
         private List<IProjectHandler> ProjectHandlers = new List<IProjectHandler>();
-        private OpenDBDiff.Front.IProjectHandler ProjectSelectorHandler;
+        private IProjectHandler ProjectSelectorHandler;
 
         public PrincipalForm()
         {
@@ -89,10 +89,14 @@ namespace OpenDBDiff.Front
             {
                 if (errorLocation == null && progress != null)
                 {
-                    errorLocation = String.Format("{0} (while {1})", progress.ErrorLocation, progress.ErrorMostRecentProgress ?? "initializing");
+                    errorLocation = progress.ErrorLocation;
+                    if (progress.ErrorMostRecentProgress == null)
+                        errorLocation += " (while initializing)";
+                    else if (!string.IsNullOrWhiteSpace(progress.ErrorMostRecentProgress))
+                        errorLocation += $" (while {progress.ErrorMostRecentProgress.ToLower()})";
                 }
 
-                throw new SchemaException("Error " + (errorLocation ?? " Comparing Databases"), ex);
+                throw new SchemaException("Error " + (errorLocation ?? " Comparing databases"), ex);
             }
         }
 

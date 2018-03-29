@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using OpenDBDiff.Schema.Errors;
+using OpenDBDiff.Schema.Events;
 using OpenDBDiff.Schema.Model;
+using OpenDBDiff.Schema.SQLServer.Generates.Generates.Util;
 using OpenDBDiff.Schema.SQLServer.Generates.Model;
 
 namespace OpenDBDiff.Schema.SQLServer.Generates.Generates
@@ -43,6 +45,7 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Generates
             {
                 if (database.Options.Ignore.FilterExtendedProperties)
                 {
+                    root.RaiseOnReading(new ProgressEventArgs("Reading extended properies...", Constants.READING_EXTENDED_PROPERTIES));
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         using (SqlCommand command = new SqlCommand(GetSQL(), conn))

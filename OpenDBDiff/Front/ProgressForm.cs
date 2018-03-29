@@ -71,7 +71,8 @@ namespace OpenDBDiff.Front
 
                     originClone = (Schema.Model.IDatabase)Origin.Clone(null);
 
-                    this.ErrorLocation = "Comparing Databases";
+                    this.ErrorLocation = "Comparing databases";
+                    this.ErrorMostRecentProgress = "";
                     Destination = Comparer.Compare(Origin, Destination);
                     Origin = originClone;
 

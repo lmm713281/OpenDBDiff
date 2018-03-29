@@ -1,6 +1,6 @@
-using System;
 using OpenDBDiff.Schema.Model;
 using OpenDBDiff.Schema.SQLServer.Generates.Model;
+using System;
 
 namespace OpenDBDiff.Schema.SQLServer.Generates.Compare
 {
@@ -47,7 +47,6 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Compare
                     {
                         if (Column.CompareIdentity(originField, node))
                         {
-
                             if (node.HasToRebuildOnlyConstraint)
                             {
                                 node.Status = ObjectStatus.Alter;
@@ -68,12 +67,9 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Compare
                                     }
                                 }
                             }
-                            if (node.Status != ObjectStatus.Rebuild)
+                            if (node.Status != ObjectStatus.Rebuild && !Column.CompareRule(originField, node))
                             {
-                                if (!Column.CompareRule(originField, node))
-                                {
-                                    node.Status += (int)ObjectStatus.Bind;
-                                }
+                                node.Status += (int)ObjectStatus.Bind;
                             }
                         }
                         else
@@ -88,4 +84,3 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Compare
         }
     }
 }
-

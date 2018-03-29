@@ -50,13 +50,13 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Generates
 
         private void Generate_OnReading(ProgressEventArgs e)
         {
-            if (OnProgress != null) OnProgress(e);
+            OnProgress?.Invoke(e);
         }
 
         public void RaiseOnReading(ProgressEventArgs e)
         {
             this.currentlyReading = e;
-            if (OnReading != null) OnReading(e);
+            OnReading?.Invoke(e);
         }
 
         public void RaiseOnReadingOne(object name)

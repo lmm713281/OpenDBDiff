@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
+using OpenDBDiff.Schema.Events;
 using OpenDBDiff.Schema.SQLServer.Generates.Generates.SQLCommands;
+using OpenDBDiff.Schema.SQLServer.Generates.Generates.Util;
 using OpenDBDiff.Schema.SQLServer.Generates.Model;
 
 namespace OpenDBDiff.Schema.SQLServer.Generates.Generates
@@ -19,6 +21,7 @@ namespace OpenDBDiff.Schema.SQLServer.Generates.Generates
             string type;
             if ((database.Options.Ignore.FilterUsers) || (database.Options.Ignore.FilterRoles))
             {
+                root.RaiseOnReading(new ProgressEventArgs("Reading users...", Constants.READING_USER));
                 using (SqlConnection conn = new SqlConnection(connectioString))
                 {
                     using (SqlCommand command = new SqlCommand(UserSQLCommand.Get(database.Info.Version), conn))
